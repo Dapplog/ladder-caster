@@ -1,0 +1,490 @@
+{
+  "version": "0.1.0",
+  "name": "laddercast",
+  "instructions": [
+    {
+      "name": "initGame",
+      "accounts": [
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "gameAccount",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "id",
+          "type": "string"
+        },
+        {
+          "name": "bump",
+          "type": "u8"
+        },
+        {
+          "name": "turnInfo",
+          "type": {
+            "defined": "GameTurnInfo"
+          }
+        }
+      ]
+    },
+    {
+      "name": "initPlayer",
+      "accounts": [
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "game",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "playerAccount",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bmp",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "initCaster",
+      "accounts": [
+        {
+          "name": "player",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "casterCommitTurn",
+      "accounts": [
+        {
+          "name": "game",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "player",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "casterIdx",
+          "type": "u8"
+        },
+        {
+          "name": "casterAction",
+          "type": {
+            "defined": "CasterAction"
+          }
+        }
+      ]
+    },
+    {
+      "name": "casterRedeemAction",
+      "accounts": [
+        {
+          "name": "game",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "player",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "casterIdx",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "crank",
+      "accounts": [
+        {
+          "name": "gameAccount",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Game",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "publicKey"
+          },
+          {
+            "name": "map",
+            "type": {
+              "vec": {
+                "defined": "Tile"
+              }
+            }
+          },
+          {
+            "name": "turnInfo",
+            "type": {
+              "defined": "GameTurnInfo"
+            }
+          },
+          {
+            "name": "resourcesBurned",
+            "type": {
+              "vec": "u64"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Player",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "publicKey"
+          },
+          {
+            "name": "game",
+            "type": "publicKey"
+          },
+          {
+            "name": "lada",
+            "type": "u64"
+          },
+          {
+            "name": "water",
+            "type": "u64"
+          },
+          {
+            "name": "earth",
+            "type": "u64"
+          },
+          {
+            "name": "fire",
+            "type": "u64"
+          },
+          {
+            "name": "casters",
+            "type": {
+              "vec": {
+                "defined": "Caster"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "GameTurnInfo",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "turn",
+            "type": "u64"
+          },
+          {
+            "name": "turnDelay",
+            "type": "u64"
+          },
+          {
+            "name": "lastCrankSlot",
+            "type": "u64"
+          },
+          {
+            "name": "lastTileSpawn",
+            "type": "u64"
+          },
+          {
+            "name": "tileSpawnDelay",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Tile",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "feature",
+            "type": {
+              "defined": "Feature"
+            }
+          },
+          {
+            "name": "life",
+            "type": "u8"
+          },
+          {
+            "name": "level",
+            "type": "u8"
+          },
+          {
+            "name": "column",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Caster",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "level",
+            "type": "u8"
+          },
+          {
+            "name": "tileLevel",
+            "type": "u8"
+          },
+          {
+            "name": "tileColumn",
+            "type": "u8"
+          },
+          {
+            "name": "turnCommit",
+            "type": {
+              "option": {
+                "defined": "TurnCommit"
+              }
+            }
+          },
+          {
+            "name": "head",
+            "type": {
+              "option": {
+                "defined": "Equipment"
+              }
+            }
+          },
+          {
+            "name": "gem",
+            "type": {
+              "option": {
+                "defined": "Equipment"
+              }
+            }
+          },
+          {
+            "name": "robes",
+            "type": {
+              "option": {
+                "defined": "Equipment"
+              }
+            }
+          },
+          {
+            "name": "staff",
+            "type": {
+              "option": {
+                "defined": "Equipment"
+              }
+            }
+          },
+          {
+            "name": "activeSpells",
+            "type": {
+              "vec": {
+                "defined": "Spell"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Equipment",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "game",
+            "type": "publicKey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TurnCommit",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "turn",
+            "type": "u64"
+          },
+          {
+            "name": "action",
+            "type": {
+              "defined": "CasterAction"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Spell",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "id",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Feature",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "None"
+          },
+          {
+            "name": "Earth"
+          },
+          {
+            "name": "Water"
+          },
+          {
+            "name": "Fire"
+          },
+          {
+            "name": "Crafting"
+          },
+          {
+            "name": "Legendary"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CasterAction",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "None"
+          },
+          {
+            "name": "Move",
+            "fields": [
+              {
+                "name": "dest_level",
+                "type": "u8"
+              },
+              {
+                "name": "dest_column",
+                "type": "u8"
+              }
+            ]
+          },
+          {
+            "name": "Loot"
+          },
+          {
+            "name": "Spell",
+            "fields": []
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "PrematureCrankPull",
+      "msg": "Turn isn't over yet!"
+    },
+    {
+      "code": 6001,
+      "name": "InvalidMove",
+      "msg": "Invalid Move"
+    },
+    {
+      "code": 6002,
+      "name": "PendingTurn",
+      "msg": "Pending turn needs to be redeemed first."
+    },
+    {
+      "code": 6003,
+      "name": "EmptyTurnCommit",
+      "msg": "No turn to redeem"
+    },
+    {
+      "code": 6004,
+      "name": "SameTurnRedeem",
+      "msg": "Turn needs to advance before you can redeem!"
+    },
+    {
+      "code": 6005,
+      "name": "PlayerIsPoor",
+      "msg": "Not enough resources for action"
+    }
+  ],
+  "metadata": {
+    "address": "9Li9DpSycv5NRyADmhurBVPB6hPc6QbCUZTuRBxMzQnE"
+  }
+}

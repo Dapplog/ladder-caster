@@ -1,0 +1,17 @@
+{
+  "translations": {
+    "language": "English",
+    "ladder.title": "Ladder",
+    "spellcasters.title": "Spellcasters",
+    "spellcasters.marketplace": "Marketplace",
+    "inventory.character": "Character",
+    "inventory.equipment": "Equipment",
+    "inventory.overview": "Overview",
+    "inventory.abilities": "Abilities",
+    "inventory.skills": "Skills",
+    "type.wizard": "Wizard",
+    "type.warlock": "Warlock",
+    "type.sorcerer": "Sorcerer",
+    "level": "Level"
+  }
+}
